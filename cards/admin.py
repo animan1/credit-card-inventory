@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Card, Issuer
+from .models import Benefit, Card, Issuer
 
 
 @admin.register(Issuer)
@@ -27,3 +27,10 @@ class CardAdmin(admin.ModelAdmin):
 
     is_active_display.boolean = True
     is_active_display.short_description = "Active?"
+
+
+@admin.register(Benefit)
+class BenefitAdmin(admin.ModelAdmin):
+    list_display = ("name", "category")
+    list_filter = ("category",)
+    search_fields = ("name", "description")

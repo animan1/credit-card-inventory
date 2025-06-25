@@ -25,3 +25,19 @@ class Card(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.issuer.name})"
+
+
+class Benefit(models.Model):
+    class Category(models.TextChoices):
+        LOUNGE_ACCESS = "lounge_access", "Lounge Access"
+        POINTS_MULTIPLIER = "points_multiplier", "Points Multiplier"
+        STATEMENT_CREDIT = "statement_credit", "Statement Credit"
+        MEMBERSHIP = "membership", "Complimentary Membership"
+        OTHER = "other", "Other"
+
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=30, choices=Category.choices)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name

@@ -2,7 +2,7 @@ from datetime import date
 
 from django.core.management.base import BaseCommand
 
-from cards.models import Card, Issuer
+from cards.models import Benefit, Card, Issuer
 
 
 def seed_issuers():
@@ -57,6 +57,49 @@ def seed_cards():
             print(f"✅ Card exists: {card.name}")
 
 
+def seed_benefits():
+    benefits = [
+        {
+            "name": "Statement Credit",
+            "category": Benefit.Category.STATEMENT_CREDIT,
+            "description": "A fixed credit amount reimbursed for eligible purchases",
+        },
+        {
+            "name": "Lounge Access",
+            "category": Benefit.Category.LOUNGE_ACCESS,
+            "description": "Access to airport lounges such as Priority Pass, Centurion, or airline-specific lounges",
+        },
+        {
+            "name": "Points Multiplier",
+            "category": Benefit.Category.POINTS_MULTIPLIER,
+            "description": "Earn additional points on specific spend categories",
+        },
+        {
+            "name": "Complimentary Membership",
+            "category": Benefit.Category.MEMBERSHIP,
+            "description": "Subscription or membership included with card",
+        },
+        {
+            "name": "Extended Warranty",
+            "category": Benefit.Category.OTHER,
+            "description": "Extended protection on purchases beyond manufacturer warranty",
+        },
+    ]
+
+    for benefit_data in benefits:
+        benefit, created = Benefit.objects.get_or_create(
+            name=benefit_data["name"],
+            defaults={
+                "category": benefit_data["category"],
+                "description": benefit_data["description"],
+            },
+        )
+        if created:
+            print(f"🆕 Created benefit: {benefit.name}")
+        else:
+            print(f"✅ Benefit exists: {benefit.name}")
+
+
 class Command(BaseCommand):
     help = "Seed initial data for Issuers and Cards"
 
@@ -65,4 +108,6 @@ class Command(BaseCommand):
         seed_issuers()
         self.stdout.write("Seeding cards...")
         seed_cards()
+        self.stdout.write("Seeding benefits...")
+        seed_benefits()
         self.stdout.write(self.style.SUCCESS("Seeding complete!"))
