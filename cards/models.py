@@ -15,6 +15,9 @@ class Card(models.Model):
     annual_fee = models.DecimalField(max_digits=8, decimal_places=2)
     open_date = models.DateField(null=True, blank=True)
     close_date = models.DateField(null=True, blank=True)
+    benefits = models.ManyToManyField(
+        "Benefit", through="CardBenefit", related_name="cards"
+    )
 
     @property
     def is_active(self):
@@ -41,3 +44,22 @@ class Benefit(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CardBenefit(models.Model):
+    card = models.ForeignKey(
+        "Card", on_delete=models.CASCADE, related_name="card_benefits"
+    )
+    benefit = models.ForeignKey(
+        "Benefit", on_delete=models.CASCADE, related_name="card_benefits"
+    )
+    display_name = models.CharField(
+        max_length=100
+    )  # e.g., "Priority Pass", "Travel Credit"
+    notes = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ("card", "display_name")
+
+    def __str__(self):
+        return f"{self.card.name}: {self.display_name}"

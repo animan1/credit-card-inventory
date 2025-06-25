@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Benefit, Card, Issuer
+from .models import Benefit, Card, CardBenefit, Issuer
 
 
 @admin.register(Issuer)
@@ -34,3 +34,10 @@ class BenefitAdmin(admin.ModelAdmin):
     list_display = ("name", "category")
     list_filter = ("category",)
     search_fields = ("name", "description")
+
+
+@admin.register(CardBenefit)
+class CardBenefitAdmin(admin.ModelAdmin):
+    list_display = ("card", "display_name", "benefit")
+    list_filter = ("benefit__category",)
+    search_fields = ("card__name", "benefit__name", "display_name")
