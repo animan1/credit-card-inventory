@@ -5,7 +5,7 @@ PYTHON := $(VENV_DIR)/bin/python
 PIP := $(VENV_DIR)/bin/pip
 DJANGO_MANAGE := $(PYTHON) manage.py
 
-.PHONY: help quickstart venv install migrate makemigrations run createsuperuser shell clean venv-shell seed
+.PHONY: help quickstart venv install migrate makemigrations run createsuperuser shell clean venv-shell seed debug
 
 help:
 	@echo "Usage:"
@@ -43,7 +43,10 @@ makemigrations:
 	$(DJANGO_MANAGE) makemigrations
 
 run:
-	$(DJANGO_MANAGE) runserver
+	DJANGO_SETTINGS_MODULE=credit_card_inventory.settings $(DJANGO_MANAGE) runserver
+
+debug:
+	DJANGO_SETTINGS_MODULE=credit_card_inventory.settings_debug $(DJANGO_MANAGE) runserver
 
 createsuperuser:
 	$(DJANGO_MANAGE) createsuperuser
