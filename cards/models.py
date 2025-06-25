@@ -63,3 +63,32 @@ class CardBenefit(models.Model):
 
     def __str__(self):
         return f"{self.card.name}: {self.display_name}"
+
+
+class SpendingCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    parent = models.ForeignKey(
+        "self", null=True, blank=True, on_delete=models.CASCADE, related_name="children"
+    )
+
+    class Meta:
+        verbose_name = "Spending Category"
+        verbose_name_plural = "Spending Categories"
+        ordering = ["name"]
+
+    def __str__(self):
+        return self.name
+
+    def is_leaf(self):
+        return not self.children.exists()
+
+    def get_ancestors(self):
+        node = self
+        while node.parent:
+            yield node.parent
+            node = node.parent
+
+    def get_descendants(self):
+        for child in self.children.all():
+            yield child
+            yield from child.get_descendants()

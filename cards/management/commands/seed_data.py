@@ -2,7 +2,7 @@ from datetime import date
 
 from django.core.management.base import BaseCommand
 
-from cards.models import Benefit, Card, CardBenefit, Issuer
+from cards.models import Benefit, Card, CardBenefit, Issuer, SpendingCategory
 
 
 def seed_issuers():
@@ -121,6 +121,22 @@ def seed_card_benefits():
             print(f"✅ Benefit already linked: {display_name}")
 
 
+def seed_spending_categories():
+    categories = {
+        "Travel": ["Airfare", "Hotels", "Train", "Rideshare", "Cruise"],
+        "Dining": ["Restaurants", "Bars", "Delivery"],
+        "Groceries": [],
+        "Gas": [],
+        "Entertainment": ["Streaming", "Theater", "Amusement Parks"],
+        "Retail": ["Clothing", "Electronics", "General"],
+    }
+
+    for parent_name, children in categories.items():
+        parent, _ = SpendingCategory.objects.get_or_create(name=parent_name)
+        for child_name in children:
+            SpendingCategory.objects.get_or_create(name=child_name, parent=parent)
+
+
 class Command(BaseCommand):
     help = "Seed initial data for Issuers and Cards"
 
@@ -133,4 +149,6 @@ class Command(BaseCommand):
         seed_benefits()
         self.stdout.write("Seeding card benefits...")
         seed_card_benefits()
+        self.stdout.write("Seeding spend categories...")
+        seed_spending_categories()
         self.stdout.write(self.style.SUCCESS("Seeding complete!"))
