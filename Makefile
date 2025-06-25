@@ -5,7 +5,7 @@ PYTHON := $(VENV_DIR)/bin/python
 PIP := $(VENV_DIR)/bin/pip
 DJANGO_MANAGE := $(PYTHON) manage.py
 
-.PHONY: help quickstart venv install migrate makemigrations run createsuperuser shell clean venv-shell
+.PHONY: help quickstart venv install migrate makemigrations run createsuperuser shell clean venv-shell seed
 
 help:
 	@echo "Usage:"
@@ -32,6 +32,9 @@ venv-shell:
 install:
 	$(PIP) install --upgrade pip
 	$(PIP) install -r requirements.txt
+
+seed:
+	$(PYTHON) manage.py seed_data
 
 migrate:
 	$(DJANGO_MANAGE) migrate
